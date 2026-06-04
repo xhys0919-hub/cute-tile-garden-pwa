@@ -762,7 +762,7 @@ h2 {
 }
 
 .tile-release-ghost.run {
-  animation: tile-ghost-fade 360ms cubic-bezier(0.2, 0.85, 0.2, 1) forwards;
+  animation: tile-ghost-fade 520ms cubic-bezier(0.25, 0.1, 0.25, 1) forwards;
 }
 
 .tile.blocked {
@@ -784,17 +784,17 @@ h2 {
     opacity: 1;
     transform: translate3d(0, -10px, 0) scale3d(1.1, 1.1, 1);
   }
-  22% {
+  30% {
     opacity: 1;
-    transform: translate3d(0, -15px, 0) scale3d(1.14, 1.14, 1);
+    transform: translate3d(0, -13px, 0) scale3d(1.13, 1.13, 1);
   }
-  62% {
-    opacity: 0.72;
-    transform: translate3d(0, -6px, 0) scale3d(0.92, 0.92, 1);
+  68% {
+    opacity: 0.62;
+    transform: translate3d(0, -5px, 0) scale3d(0.94, 0.94, 1);
   }
   100% {
     opacity: 0;
-    transform: translate3d(0, 0, 0) scale3d(0.72, 0.72, 1);
+    transform: translate3d(0, 0, 0) scale3d(0.78, 0.78, 1);
   }
 }
 

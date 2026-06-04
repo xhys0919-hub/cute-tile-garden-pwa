@@ -889,7 +889,7 @@ function showTileReleaseGhost(tileEl) {
   ghost.style.zIndex = String((Number(getComputedStyle(tileEl).zIndex) || 100) + 500);
   document.body.appendChild(ghost);
   requestAnimationFrame(() => ghost.classList.add("run"));
-  window.setTimeout(() => ghost.remove(), 520);
+  window.setTimeout(() => ghost.remove(), 640);
 }
 
 function beginPickTile(tileEl) {
@@ -979,12 +979,10 @@ function pickTile(id, options = {}) {
   });
 
   if (options.deferRender) {
-    renderTray();
-    updateQuickHud();
     window.setTimeout(() => {
       render();
       setTimeout(resolveTray, 30);
-    }, 260);
+    }, 540);
     return;
   }
 

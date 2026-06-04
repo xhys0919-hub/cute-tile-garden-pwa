@@ -165,7 +165,7 @@ const sound = {
       this.bgmAudio = new Audio();
       this.bgmAudio.loop = true;
       this.bgmAudio.preload = "none";
-      this.bgmAudio.volume = 0.62;
+      this.bgmAudio.volume = 0.46;
       this.bgmAudio.src = "./assets/audio/bgm.wav";
     }
     return this.bgmAudio;
@@ -214,6 +214,12 @@ const sound = {
     }
   },
   startMusic() {
+    const bgm = this.ensureBgm();
+    this.musicStarted = true;
+    if (bgm.paused) {
+      bgm.play().catch(() => {});
+    }
+    return;
     const ctx = this.getContext();
     if (!ctx) return;
     if (this.musicStarted) return;
@@ -1433,7 +1439,6 @@ function debounce(fn, delay) {
 
 
 renderStartScene();
-sound.startMusic();
 ["pointerdown", "touchstart", "keydown"].forEach((eventName) => {
   document.addEventListener(eventName, () => sound.unlock(), {
     capture: true,

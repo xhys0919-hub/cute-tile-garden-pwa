@@ -132,6 +132,8 @@ const state = {
   pendingDialog: null,
 };
 
+let activeTilePress = null;
+
 const sound = {
   ctx: null,
   sfxGain: null,
@@ -718,10 +720,11 @@ function render() {
   boardEl.innerHTML = liveTiles.map((tile) => tileButton(tile, available.has(tile.id))).join("");
   for (const tileEl of boardEl.querySelectorAll(".tile.available")) {
     if (window.PointerEvent) {
-      tileEl.addEventListener("pointerdown", (event) => {
-        event.preventDefault();
-        beginPickTile(tileEl);
-      });
+      tileEl.addEventListener("pointerdown", (event) => beginTilePress(tileEl, event));
+      tileEl.addEventListener("pointermove", updateTilePress);
+      tileEl.addEventListener("pointerup", finishTilePress);
+      tileEl.addEventListener("pointercancel", cancelTilePress);
+      tileEl.addEventListener("lostpointercapture", cancelTilePress);
     } else {
       tileEl.addEventListener("click", () => beginPickTile(tileEl));
     }
@@ -791,15 +794,61 @@ function getCoveringTiles(tile) {
   });
 }
 
+function isPointInsideElement(event, element) {
+  const rect = element.getBoundingClientRect();
+  return event.clientX >= rect.left && event.clientX <= rect.right && event.clientY >= rect.top && event.clientY <= rect.bottom;
+}
+
+function beginTilePress(tileEl, event) {
+  if (!tileEl || tileEl.dataset.picking === "1") return;
+  const id = tileEl.dataset.id;
+  const tile = state.tiles.find((item) => item.id === id);
+  if (state.locked || !tile || tile.removed || isBlocked(tile)) return;
+  event.preventDefault();
+  activeTilePress = {
+    id,
+    tileEl,
+    pointerId: event.pointerId,
+    cancelled: false,
+  };
+  tileEl.classList.add("pressed");
+  tileEl.setPointerCapture?.(event.pointerId);
+}
+
+function updateTilePress(event) {
+  if (!activeTilePress || activeTilePress.pointerId !== event.pointerId) return;
+  if (!isPointInsideElement(event, activeTilePress.tileEl)) {
+    activeTilePress.cancelled = true;
+    activeTilePress.tileEl.classList.remove("pressed");
+  }
+}
+
+function finishTilePress(event) {
+  if (!activeTilePress || activeTilePress.pointerId !== event.pointerId) return;
+  event.preventDefault();
+  const press = activeTilePress;
+  const shouldPick = !press.cancelled && isPointInsideElement(event, press.tileEl);
+  press.tileEl.classList.remove("pressed");
+  activeTilePress = null;
+  press.tileEl.releasePointerCapture?.(event.pointerId);
+  if (shouldPick) beginPickTile(press.tileEl);
+}
+
+function cancelTilePress(event) {
+  if (!activeTilePress) return;
+  if (event?.pointerId !== undefined && activeTilePress.pointerId !== event.pointerId) return;
+  activeTilePress.tileEl.classList.remove("pressed");
+  activeTilePress = null;
+}
+
 function beginPickTile(tileEl) {
   if (!tileEl || tileEl.dataset.picking === "1") return;
   const id = tileEl.dataset.id;
   const tile = state.tiles.find((item) => item.id === id);
   if (state.locked || !tile || tile.removed || isBlocked(tile)) return;
   tileEl.dataset.picking = "1";
-  tileEl.classList.add("pressed");
   sound.tap("tile");
-  window.setTimeout(() => pickTile(id, { skipSound: true }), 110);
+  window.setTimeout(() => pickTile(id, { skipSound: true }), 70);
 }
 
 function isNearLayerCover(tile, other, tileSize) {

@@ -272,9 +272,6 @@ const sound = {
           this.musicTone(freq, beat + index * 0.04, 1.22, 0.018, "sine");
         });
       }
-      if (step % 4 === 2) {
-        this.musicNoise(beat + 0.05, 0.07, 0.006);
-      }
       this.nextMusicAt += stepDur;
       this.musicStep += 1;
     }
@@ -753,7 +750,7 @@ function beginPickTile(tileEl) {
   tileEl.dataset.picking = "1";
   tileEl.classList.add("pressed");
   sound.tap("tile");
-  window.setTimeout(() => pickTile(id, { skipSound: true }), 70);
+  window.setTimeout(() => pickTile(id, { skipSound: true }), 110);
 }
 
 function isNearLayerCover(tile, other, tileSize) {

@@ -637,9 +637,9 @@ h2 {
   transform: translate3d(var(--x), var(--y), 0) rotate(var(--r));
   transition:
     opacity 120ms ease,
-    filter 120ms ease,
-    transform 90ms ease,
-    box-shadow 90ms ease;
+    filter 130ms ease,
+    transform 155ms cubic-bezier(0.18, 1.7, 0.32, 1),
+    box-shadow 145ms cubic-bezier(0.18, 1.25, 0.32, 1);
   touch-action: manipulation;
   will-change: transform, opacity;
 }
@@ -736,8 +736,11 @@ h2 {
 }
 
 .tile.pressed {
-  filter: brightness(1.08) saturate(1.04);
-  transform: translate3d(var(--x), calc(var(--y) - 9px), 0) scale(1.035) rotate(var(--r));
+  filter: brightness(1.12) saturate(1.08);
+  transform: translate3d(var(--x), calc(var(--y) - 12px), 0) scale(1.075) rotate(var(--r));
+  box-shadow:
+    0 calc(4px + var(--depth-shadow)) 0 rgba(238, 198, 102, 0.86),
+    0 calc(20px + var(--depth-shadow-big)) 26px rgba(49, 82, 75, 0.24);
 }
 
 .tile.blocked {
@@ -748,7 +751,10 @@ h2 {
 
 .tile.removing {
   opacity: 0;
-  transform: translate3d(var(--x), calc(var(--y) - 18px), 0) scale(0.78) rotate(var(--r));
+  transform: translate3d(var(--x), calc(var(--y) - 22px), 0) scale(0.84) rotate(var(--r));
+  transition:
+    opacity 150ms ease,
+    transform 170ms cubic-bezier(0.2, 1.15, 0.35, 1);
 }
 
 .tray-tile.leaving {

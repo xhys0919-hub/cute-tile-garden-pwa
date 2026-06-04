@@ -151,7 +151,7 @@ const sound = {
       this.sfxGain = this.ctx.createGain();
       this.musicGain = this.ctx.createGain();
       this.sfxGain.gain.value = 0.9;
-      this.musicGain.gain.value = 0.026;
+      this.musicGain.gain.value = 0.038;
       this.sfxGain.connect(this.ctx.destination);
       this.musicGain.connect(this.ctx.destination);
     }
@@ -212,12 +212,6 @@ const sound = {
     }
   },
   startMusic() {
-    const bgm = this.ensureBgm();
-    if (bgm.paused) {
-      bgm.play().catch(() => {});
-    }
-    this.musicStarted = true;
-    return;
     const ctx = this.getContext();
     if (!ctx) return;
     if (this.musicStarted) return;
@@ -234,75 +228,58 @@ const sound = {
     const ctx = this.getContext();
     if (!ctx || !this.musicStarted) return;
     const melody = [
-      523, 659, 784, 659, 587, 659, 523, 440,
-      494, 587, 659, 784, 880, 784, 659, 587,
-      523, 659, 740, 880, 784, 659, 587, 523,
-      440, 523, 587, 659, 587, 494, 440, 392,
-      392, 494, 587, 659, 740, 659, 587, 494,
-      440, 523, 659, 784, 659, 587, 523, 440,
-      494, 587, 740, 880, 988, 880, 784, 659,
-      587, 659, 784, 659, 587, 523, 494, 392,
-      523, 587, 659, 784, 880, 784, 659, 523,
-      587, 659, 740, 880, 740, 659, 587, 494,
-      440, 494, 587, 659, 784, 659, 523, 440,
-      392, 440, 494, 587, 659, 587, 494, 392,
-      523, 659, 784, 988, 880, 784, 659, 587,
-      494, 587, 659, 784, 740, 659, 587, 523,
-      440, 523, 587, 659, 587, 523, 494, 440,
-      392, 494, 523, 587, 523, 494, 440, 392,
+      784, 988, 1046, 988, 880, 784, 659, 784,
+      880, 784, 659, 587, 659, 0, 659, 784,
+      784, 988, 1175, 1046, 988, 880, 784, 659,
+      587, 659, 784, 880, 784, 659, 587, 0,
+      659, 784, 880, 988, 880, 784, 659, 523,
+      587, 659, 784, 659, 587, 0, 523, 587,
+      659, 784, 988, 1046, 1175, 1046, 988, 784,
+      880, 784, 659, 587, 659, 784, 659, 0,
     ];
     const bass = [
-      131, 131, 196, 196, 147, 147, 220, 220,
-      165, 165, 247, 247, 147, 147, 220, 220,
-      131, 131, 196, 196, 175, 175, 262, 262,
-      165, 165, 247, 247, 196, 196, 147, 147,
+      131, 196, 220, 175,
+      131, 196, 175, 196,
     ];
     const chords = [
       [262, 330, 392],
-      [294, 349, 440],
-      [330, 392, 494],
-      [247, 330, 392],
-      [220, 262, 330],
-      [247, 294, 370],
-      [262, 330, 392],
       [196, 247, 330],
-      [262, 392, 523],
-      [294, 440, 587],
-      [330, 494, 659],
+      [220, 262, 330],
+      [175, 220, 262],
+      [262, 330, 392],
+      [196, 247, 392],
       [220, 330, 440],
-      [196, 294, 392],
-      [247, 370, 494],
-      [262, 330, 523],
-      [196, 262, 392],
+      [175, 262, 349],
     ];
-    const stepDur = 0.9;
-    while (this.nextMusicAt < ctx.currentTime + 4.2) {
+    const sparkle = [1046, 1175, 1318, 1175];
+    const stepDur = 0.285;
+    while (this.nextMusicAt < ctx.currentTime + 3.2) {
       const step = this.musicStep;
       const beat = this.nextMusicAt;
-      const phrase = Math.floor(step / 64);
       const melodyNote = melody[step % melody.length];
-      const melodyVolume = phrase % 2 === 0 ? 0.09 : 0.105;
-      this.musicTone(melodyNote, beat, 0.62, melodyVolume, step % 4 === 0 ? "triangle" : "sine");
-      if (step % 4 === 2) {
-        this.musicTone(melodyNote * 2, beat + stepDur * 0.38, 0.22, 0.035, "triangle");
+      if (melodyNote) {
+        this.musicTone(melodyNote, beat, 0.18, 0.115, "triangle");
       }
-      if (step % 2 === 0) {
-        this.musicTone(bass[Math.floor(step / 2) % bass.length], beat, 0.82, 0.052, "sine");
+      if (step % 8 === 5) {
+        this.musicTone(sparkle[Math.floor(step / 8) % sparkle.length], beat + stepDur * 0.44, 0.1, 0.034, "sine");
       }
       if (step % 4 === 0) {
-        const chord = chords[Math.floor(step / 4) % chords.length];
+        this.musicTone(bass[Math.floor(step / 4) % bass.length], beat, 0.36, 0.052, "sine");
+      }
+      if (step % 8 === 0) {
+        const chord = chords[Math.floor(step / 8) % chords.length];
         chord.forEach((freq, index) => {
-          this.musicTone(freq, beat + index * 0.055, 1.9, 0.018, "sine");
+          this.musicTone(freq, beat + index * 0.04, 1.22, 0.018, "sine");
         });
       }
-      if (step % 16 === 12) {
-        this.musicNoise(beat + 0.28, 0.18, 0.006);
+      if (step % 4 === 2) {
+        this.musicNoise(beat + 0.05, 0.07, 0.006);
       }
       this.nextMusicAt += stepDur;
       this.musicStep += 1;
     }
     window.clearTimeout(this.musicTimer);
-    this.musicTimer = window.setTimeout(() => this.scheduleMusic(), 1800);
+    this.musicTimer = window.setTimeout(() => this.scheduleMusic(), 1200);
   },
   musicTone(freq, start, duration, volume, type) {
     const ctx = this.getContext();

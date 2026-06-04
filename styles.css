@@ -89,7 +89,7 @@ button:disabled {
 .phone-game {
   position: relative;
   display: grid;
-  grid-template-rows: auto auto minmax(260px, 1fr) auto auto;
+  grid-template-rows: auto auto minmax(190px, 1fr) auto auto;
   gap: clamp(6px, 1.05dvh, 9px);
   width: min(100%, var(--phone-width));
   height: 100%;
@@ -100,10 +100,9 @@ button:disabled {
   min-height: 100svh;
   height: 100dvh;
   min-height: 100dvh;
-  height: 100lvh;
-  min-height: 100lvh;
+  max-height: 100dvh;
   margin: 0 auto;
-  padding: max(10px, env(safe-area-inset-top)) 10px max(10px, env(safe-area-inset-bottom));
+  padding: max(10px, env(safe-area-inset-top)) 10px max(14px, env(safe-area-inset-bottom));
   background:
     linear-gradient(rgba(255, 255, 255, 0.28) 1px, transparent 1px),
     linear-gradient(90deg, rgba(255, 255, 255, 0.24) 1px, transparent 1px),
@@ -1095,6 +1094,7 @@ h2 {
 }
 
 .tray-section {
+  min-height: calc(var(--tile-size) + 58px);
   padding: 10px;
   background:
     linear-gradient(180deg, #b87934, #8f551e);
@@ -1752,7 +1752,7 @@ h2 {
   }
 
   .phone-game {
-    grid-template-rows: auto auto minmax(250px, 1fr) auto auto;
+    grid-template-rows: auto auto minmax(170px, 1fr) auto auto;
     gap: 6px;
     padding-left: 8px;
     padding-right: 8px;
@@ -1812,6 +1812,7 @@ h2 {
   }
 
   .tray-section {
+    min-height: calc(var(--tile-size) + 50px);
     padding: 8px;
     border-radius: 18px;
   }

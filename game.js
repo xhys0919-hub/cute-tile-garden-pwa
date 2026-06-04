@@ -852,8 +852,7 @@ function beginTilePress(tileEl, event) {
 function updateTilePress(event) {
   if (!activeTilePress || activeTilePress.pointerId !== event.pointerId) return;
   if (!isPointInsideElement(event, activeTilePress.tileEl)) {
-    activeTilePress.cancelled = true;
-    activeTilePress.tileEl.classList.remove("pressed");
+    cancelTilePress(event);
   }
 }
 
@@ -871,7 +870,9 @@ function finishTilePress(event) {
 function cancelTilePress(event) {
   if (!activeTilePress) return;
   if (event?.pointerId !== undefined && activeTilePress.pointerId !== event.pointerId) return;
-  activeTilePress.tileEl.classList.remove("pressed");
+  const press = activeTilePress;
+  press.tileEl.classList.remove("pressed");
+  press.tileEl.releasePointerCapture?.(press.pointerId);
   activeTilePress = null;
 }
 

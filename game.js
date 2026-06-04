@@ -774,6 +774,14 @@ function render() {
   }
 }
 
+function updateQuickHud() {
+  const liveTiles = state.tiles.filter((tile) => !tile.removed);
+  leftText.textContent = String(liveTiles.length);
+  comboText.textContent = String(state.combo);
+  trayCount.textContent = `${state.tray.length} / ${TRAY_LIMIT}`;
+  undoBtn.disabled = state.locked || !state.items.undo || state.history.length === 0;
+}
+
 function tileButton(tile, available) {
   const animal = getAnimal(tile.type);
   const coverDepth = available ? 0 : getCoverDepth(tile);
@@ -893,7 +901,7 @@ function beginPickTile(tileEl) {
   showTileReleaseGhost(tileEl);
   tileEl.style.visibility = "hidden";
   sound.tap("tile");
-  pickTile(id, { skipSound: true });
+  pickTile(id, { skipSound: true, deferRender: true });
 }
 
 function isNearLayerCover(tile, other, tileSize) {
@@ -968,6 +976,16 @@ function pickTile(id, options = {}) {
     tileId: tile.id,
     instanceId: `${tile.id}-${Date.now()}`,
   });
+
+  if (options.deferRender) {
+    renderTray();
+    updateQuickHud();
+    window.setTimeout(() => {
+      render();
+      setTimeout(resolveTray, 30);
+    }, 260);
+    return;
+  }
 
   render();
   setTimeout(resolveTray, 30);

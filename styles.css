@@ -636,12 +636,11 @@ h2 {
     0 calc(15px + var(--depth-shadow-big)) 22px rgba(38, 62, 58, 0.28);
   transform: translate3d(var(--x), var(--y), 0) rotate(var(--r));
   transition:
-    opacity 220ms ease,
-    filter 240ms ease,
-    transform 260ms cubic-bezier(0.19, 1, 0.22, 1),
-    box-shadow 260ms cubic-bezier(0.19, 1, 0.22, 1);
+    opacity 180ms linear,
+    transform 220ms cubic-bezier(0.2, 0.9, 0.2, 1);
   touch-action: manipulation;
   will-change: transform, opacity;
+  backface-visibility: hidden;
 }
 
 .tile::before {
@@ -736,11 +735,7 @@ h2 {
 }
 
 .tile.pressed {
-  filter: brightness(1.14) saturate(1.12);
-  transform: translate3d(var(--x), calc(var(--y) - 12px), 0) scale(1.14) rotate(var(--r));
-  box-shadow:
-    0 calc(4px + var(--depth-shadow)) 0 rgba(238, 198, 102, 0.86),
-    0 calc(24px + var(--depth-shadow-big)) 30px rgba(49, 82, 75, 0.22);
+  transform: translate3d(var(--x), calc(var(--y) - 12px), 0) scale3d(1.14, 1.14, 1) rotate(var(--r));
 }
 
 .tile-release-ghost {
@@ -760,13 +755,14 @@ h2 {
     0 22px 28px rgba(49, 82, 75, 0.2);
   contain: layout paint style;
   opacity: 1;
-  transform: translate3d(0, -10px, 0) scale(1.1);
+  transform: translate3d(0, -10px, 0) scale3d(1.1, 1.1, 1);
   transform-origin: center;
-  will-change: transform, opacity, filter;
+  will-change: transform, opacity;
+  backface-visibility: hidden;
 }
 
 .tile-release-ghost.run {
-  animation: tile-ghost-fade 760ms cubic-bezier(0.19, 1, 0.22, 1) forwards;
+  animation: tile-ghost-fade 640ms linear forwards;
 }
 
 .tile.blocked {
@@ -786,26 +782,31 @@ h2 {
 @keyframes tile-ghost-fade {
   0% {
     opacity: 1;
-    filter: brightness(1.12) saturate(1.08);
-    transform: translate3d(0, -10px, 0) scale(1.1);
+    transform: translate3d(0, -10px, 0) scale3d(1.1, 1.1, 1);
   }
-  18% {
+  12% {
     opacity: 1;
-    filter: brightness(1.16) saturate(1.1);
-    transform: translate3d(0, -18px, 0) scale(1.17);
+    transform: translate3d(0, -15px, 0) scale3d(1.16, 1.16, 1);
   }
-  45% {
-    opacity: 0.9;
-    transform: translate3d(0, -11px, 0) scale(1.1);
+  24% {
+    opacity: 0.96;
+    transform: translate3d(0, -17px, 0) scale3d(1.18, 1.18, 1);
   }
-  74% {
+  42% {
+    opacity: 0.82;
+    transform: translate3d(0, -12px, 0) scale3d(1.11, 1.11, 1);
+  }
+  64% {
     opacity: 0.48;
-    transform: translate3d(0, -4px, 0) scale(1.035);
+    transform: translate3d(0, -6px, 0) scale3d(1.045, 1.045, 1);
+  }
+  82% {
+    opacity: 0.18;
+    transform: translate3d(0, -2px, 0) scale3d(1.01, 1.01, 1);
   }
   100% {
     opacity: 0;
-    filter: brightness(1.02) saturate(1);
-    transform: translate3d(0, 0, 0) scale(1);
+    transform: translate3d(0, 0, 0) scale3d(1, 1, 1);
   }
 }
 

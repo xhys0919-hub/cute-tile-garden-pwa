@@ -1,4 +1,4 @@
-const CACHE_NAME = "cute-tile-garden-v19";
+const CACHE_NAME = "cute-tile-garden-v20";
 const APP_SHELL = [
   "./",
   "./index.html",

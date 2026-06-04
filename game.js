@@ -169,6 +169,19 @@ const sound = {
       this.bgmAudio.volume = 0.22;
       this.bgmAudio.src = "./assets/audio/bgm.wav";
       this.bgmAudio.setAttribute("playsinline", "");
+      this.bgmAudio.addEventListener("ended", () => {
+        if (!this.musicStarted) return;
+        this.musicPlayPromise = null;
+        this.bgmAudio.currentTime = 0;
+        this.startMusic();
+      });
+      this.bgmAudio.addEventListener("timeupdate", () => {
+        if (!this.musicStarted || !Number.isFinite(this.bgmAudio.duration)) return;
+        if (this.bgmAudio.duration - this.bgmAudio.currentTime < 0.16) {
+          this.bgmAudio.currentTime = 0;
+          this.startMusic();
+        }
+      });
     }
     return this.bgmAudio;
   },
@@ -863,7 +876,7 @@ function beginPickTile(tileEl) {
   tileEl.classList.remove("pressed");
   tileEl.classList.add("released");
   sound.tap("tile");
-  window.setTimeout(() => pickTile(id, { skipSound: true }), 230);
+  window.setTimeout(() => pickTile(id, { skipSound: true }), 310);
 }
 
 function isNearLayerCover(tile, other, tileSize) {

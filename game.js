@@ -867,6 +867,24 @@ function cancelTilePress(event) {
   activeTilePress = null;
 }
 
+function showTileReleaseGhost(tileEl) {
+  const phoneEl = document.querySelector(".phone-game");
+  if (!phoneEl || !tileEl) return;
+  const tileRect = tileEl.getBoundingClientRect();
+  const phoneRect = phoneEl.getBoundingClientRect();
+  const ghost = document.createElement("div");
+  ghost.className = "tile-release-ghost";
+  ghost.innerHTML = tileEl.innerHTML;
+  ghost.style.left = `${tileRect.left - phoneRect.left}px`;
+  ghost.style.top = `${tileRect.top - phoneRect.top}px`;
+  ghost.style.width = `${tileRect.width}px`;
+  ghost.style.height = `${tileRect.height}px`;
+  ghost.style.zIndex = String((Number(getComputedStyle(tileEl).zIndex) || 100) + 500);
+  phoneEl.appendChild(ghost);
+  requestAnimationFrame(() => ghost.classList.add("run"));
+  window.setTimeout(() => ghost.remove(), 460);
+}
+
 function beginPickTile(tileEl) {
   if (!tileEl || tileEl.dataset.picking === "1") return;
   const id = tileEl.dataset.id;
@@ -874,9 +892,9 @@ function beginPickTile(tileEl) {
   if (state.locked || !tile || tile.removed || isBlocked(tile)) return;
   tileEl.dataset.picking = "1";
   tileEl.classList.remove("pressed");
-  tileEl.classList.add("released");
+  showTileReleaseGhost(tileEl);
   sound.tap("tile");
-  window.setTimeout(() => pickTile(id, { skipSound: true }), 310);
+  pickTile(id, { skipSound: true });
 }
 
 function isNearLayerCover(tile, other, tileSize) {

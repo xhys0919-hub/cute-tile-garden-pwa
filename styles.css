@@ -636,10 +636,10 @@ h2 {
     0 calc(15px + var(--depth-shadow-big)) 22px rgba(38, 62, 58, 0.28);
   transform: translate3d(var(--x), var(--y), 0) rotate(var(--r));
   transition:
-    opacity 140ms ease,
-    filter 150ms ease,
-    transform 190ms cubic-bezier(0.16, 1.85, 0.28, 1),
-    box-shadow 170ms cubic-bezier(0.18, 1.35, 0.32, 1);
+    opacity 120ms ease,
+    filter 120ms ease,
+    transform 120ms cubic-bezier(0.2, 1.65, 0.3, 1),
+    box-shadow 120ms cubic-bezier(0.2, 1.25, 0.3, 1);
   touch-action: manipulation;
   will-change: transform, opacity;
 }
@@ -736,20 +736,15 @@ h2 {
 }
 
 .tile.pressed {
-  filter: brightness(1.14) saturate(1.1);
-  transform: translate3d(var(--x), calc(var(--y) - 14px), 0) scale(1.12) rotate(var(--r));
+  filter: brightness(1.14) saturate(1.12);
+  transform: translate3d(var(--x), calc(var(--y) - 12px), 0) scale(1.12) rotate(var(--r));
   box-shadow:
     0 calc(4px + var(--depth-shadow)) 0 rgba(238, 198, 102, 0.86),
     0 calc(22px + var(--depth-shadow-big)) 28px rgba(49, 82, 75, 0.24);
 }
 
-.tile.released {
-  pointer-events: none;
-  animation: tile-release-pop 340ms cubic-bezier(0.16, 1.35, 0.28, 1) forwards;
-}
-
 .tile-release-ghost {
-  position: absolute;
+  position: fixed;
   z-index: 9000;
   display: grid;
   padding: 5px;
@@ -763,12 +758,15 @@ h2 {
   box-shadow:
     0 4px 0 rgba(238, 198, 102, 0.82),
     0 22px 28px rgba(49, 82, 75, 0.2);
+  contain: layout paint style;
   opacity: 1;
-  transform: translateY(-14px) scale(1.12);
+  transform: translate3d(0, -12px, 0) scale(1.12);
+  transform-origin: center;
+  will-change: transform, opacity, filter;
 }
 
 .tile-release-ghost.run {
-  animation: tile-ghost-fade 420ms cubic-bezier(0.16, 1.25, 0.28, 1) forwards;
+  animation: tile-ghost-fade 480ms cubic-bezier(0.16, 1.18, 0.26, 1) forwards;
 }
 
 .tile.blocked {
@@ -785,33 +783,24 @@ h2 {
     transform 170ms cubic-bezier(0.2, 1.15, 0.35, 1);
 }
 
-@keyframes tile-release-pop {
-  0% {
-    opacity: 1;
-    transform: translate3d(var(--x), calc(var(--y) - 14px), 0) scale(1.12) rotate(var(--r));
-  }
-  58% {
-    opacity: 0.78;
-    transform: translate3d(var(--x), calc(var(--y) - 6px), 0) scale(1.06) rotate(var(--r));
-  }
-  100% {
-    opacity: 0;
-    transform: translate3d(var(--x), var(--y), 0) scale(1) rotate(var(--r));
-  }
-}
-
 @keyframes tile-ghost-fade {
   0% {
     opacity: 1;
-    transform: translateY(-14px) scale(1.12);
+    filter: brightness(1.12) saturate(1.08);
+    transform: translate3d(0, -12px, 0) scale(1.12);
+  }
+  22% {
+    opacity: 1;
+    transform: translate3d(0, -16px, 0) scale(1.16);
   }
   55% {
-    opacity: 0.72;
-    transform: translateY(-7px) scale(1.06);
+    opacity: 0.74;
+    transform: translate3d(0, -7px, 0) scale(1.06);
   }
   100% {
     opacity: 0;
-    transform: translateY(0) scale(1);
+    filter: brightness(1.02) saturate(1);
+    transform: translate3d(0, 0, 0) scale(1);
   }
 }
 

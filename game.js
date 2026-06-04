@@ -868,21 +868,19 @@ function cancelTilePress(event) {
 }
 
 function showTileReleaseGhost(tileEl) {
-  const phoneEl = document.querySelector(".phone-game");
-  if (!phoneEl || !tileEl) return;
+  if (!tileEl) return;
   const tileRect = tileEl.getBoundingClientRect();
-  const phoneRect = phoneEl.getBoundingClientRect();
   const ghost = document.createElement("div");
   ghost.className = "tile-release-ghost";
   ghost.innerHTML = tileEl.innerHTML;
-  ghost.style.left = `${tileRect.left - phoneRect.left}px`;
-  ghost.style.top = `${tileRect.top - phoneRect.top}px`;
+  ghost.style.left = `${tileRect.left}px`;
+  ghost.style.top = `${tileRect.top}px`;
   ghost.style.width = `${tileRect.width}px`;
   ghost.style.height = `${tileRect.height}px`;
   ghost.style.zIndex = String((Number(getComputedStyle(tileEl).zIndex) || 100) + 500);
-  phoneEl.appendChild(ghost);
+  document.body.appendChild(ghost);
   requestAnimationFrame(() => ghost.classList.add("run"));
-  window.setTimeout(() => ghost.remove(), 460);
+  window.setTimeout(() => ghost.remove(), 520);
 }
 
 function beginPickTile(tileEl) {
@@ -893,6 +891,7 @@ function beginPickTile(tileEl) {
   tileEl.dataset.picking = "1";
   tileEl.classList.remove("pressed");
   showTileReleaseGhost(tileEl);
+  tileEl.style.visibility = "hidden";
   sound.tap("tile");
   pickTile(id, { skipSound: true });
 }

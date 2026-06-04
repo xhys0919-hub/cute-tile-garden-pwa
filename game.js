@@ -141,6 +141,7 @@ const sound = {
   musicTimer: null,
   musicStarted: false,
   bgmAudio: null,
+  musicPlayPromise: null,
   nextMusicAt: 0,
   musicStep: 0,
   lastAt: 0,
@@ -165,8 +166,9 @@ const sound = {
       this.bgmAudio = new Audio();
       this.bgmAudio.loop = true;
       this.bgmAudio.preload = "none";
-      this.bgmAudio.volume = 0.46;
+      this.bgmAudio.volume = 0.22;
       this.bgmAudio.src = "./assets/audio/bgm.wav";
+      this.bgmAudio.setAttribute("playsinline", "");
     }
     return this.bgmAudio;
   },
@@ -174,6 +176,7 @@ const sound = {
     this.unlock(kind);
   },
   unlock(kind = null) {
+    this.startMusic();
     const ctx = this.getContext();
     if (!ctx) return;
     if (ctx.state === "running") {
@@ -216,9 +219,13 @@ const sound = {
   startMusic() {
     const bgm = this.ensureBgm();
     this.musicStarted = true;
-    if (bgm.paused) {
-      bgm.play().catch(() => {});
-    }
+    if (!bgm.paused || this.musicPlayPromise) return;
+    bgm.load();
+    this.musicPlayPromise = bgm.play()
+      .catch(() => {})
+      .finally(() => {
+        this.musicPlayPromise = null;
+      });
     return;
     const ctx = this.getContext();
     if (!ctx) return;
@@ -853,8 +860,10 @@ function beginPickTile(tileEl) {
   const tile = state.tiles.find((item) => item.id === id);
   if (state.locked || !tile || tile.removed || isBlocked(tile)) return;
   tileEl.dataset.picking = "1";
+  tileEl.classList.remove("pressed");
+  tileEl.classList.add("released");
   sound.tap("tile");
-  window.setTimeout(() => pickTile(id, { skipSound: true }), 70);
+  window.setTimeout(() => pickTile(id, { skipSound: true }), 230);
 }
 
 function isNearLayerCover(tile, other, tileSize) {

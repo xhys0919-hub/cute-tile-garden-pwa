@@ -160,10 +160,11 @@ const sound = {
   },
   ensureBgm() {
     if (!this.bgmAudio) {
-      this.bgmAudio = new Audio("./assets/audio/bgm.wav");
+      this.bgmAudio = new Audio();
       this.bgmAudio.loop = true;
-      this.bgmAudio.preload = "auto";
+      this.bgmAudio.preload = "none";
       this.bgmAudio.volume = 0.62;
+      this.bgmAudio.src = "./assets/audio/bgm.wav";
     }
     return this.bgmAudio;
   },
